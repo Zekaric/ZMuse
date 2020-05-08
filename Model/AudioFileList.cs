@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -21,7 +22,20 @@ namespace ZMuse.Model
         /// </summary>
         public AudioFileList(String AudioDir)
         {
-            _ProcessDir(AudioDir);
+            // Get the song files.
+            try
+            { 
+                _ProcessDir(AudioDir);
+            }
+            catch
+            {
+                #if DEBUG
+                Debug.WriteLine("Failure to read directory.");
+                #endif
+            }
+
+            // Sort the list.
+            FileList.Sort();
         }
 
         /// <summary>

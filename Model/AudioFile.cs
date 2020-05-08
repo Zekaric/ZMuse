@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Text;
 
 namespace ZMuse.Model
 {
-    public class AudioFile
+    public class AudioFile : IComparable<AudioFile>
     {
         // Variable/Property //////////////////////////////////////////////////////////////////////
+        #if DEBUG
+        private static String lastImage = "";
+        #endif
 
         public String FileName      { get; set; }
         public String FileNameImage { get; set; }
@@ -50,12 +56,56 @@ namespace ZMuse.Model
             itemp           = this.NameArtist.LastIndexOf('\\');
             this.NameArtist = this.NameArtist.Substring(itemp + 1);
 
+            // Move the articles to the end.
+            if (this.NameArtist.StartsWith("the ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                this.NameArtist = this.NameArtist.Substring(4) + ", The";
+            }
+
             // Trim the extension from the song name.
             itemp           = this.NameSong.LastIndexOf('.');
             if (itemp > 0)
             { 
                 this.NameSong = this.NameSong.Substring(0, itemp);
             }
+
+            #if DEBUG
+            if (!AudioFile.lastImage.Equals(this.FileNameImage) &&
+                !File.Exists(this.FileNameImage))
+            {
+                AudioFile.lastImage = this.FileNameImage;
+                Debug.WriteLine(this.FileNameImage + " is missing.");
+            }
+            #endif
+        }
+
+        // IComparable ////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Comparing two Audio Files.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public Int32 CompareTo([AllowNull] AudioFile other)
+        {
+            Int32 result;
+
+            result = this.NameArtist.CompareTo(other.NameArtist);
+            if (result != 0) return result;
+
+            result = this.NameAlbum.CompareTo(other.NameAlbum);
+            if (result != 0) return result;
+
+            result = this.NameTrack.CompareTo(other.NameTrack);
+            if (result != 0) return result;
+
+            result = this.NameSong.CompareTo(other.NameSong);
+            if (result != 0) return result;
+
+            result = this.FileName.CompareTo(other.FileName);
+            if (result != 0) return result;
+
+            return 0;
         }
     }
 }

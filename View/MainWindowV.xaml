@@ -33,7 +33,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="2">
-                    <Image Width="128" Height="128" Source="{Binding NameFileImage}"/>
+                    <Image Width="200" Height="200" Source="{Binding NameFileImage}"/>
                 </Border>
 
                 <Border Grid.Column="1" Margin="3"/>
@@ -52,33 +52,155 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Column="1" Margin="3"/>
+                    <Border Grid.Column="1" Grid.Row="0"  Margin="3"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Artist:"/>
-                    <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding NameArtist}" />
+                    <Button Grid.Column="0" Grid.Row="0" Command="{Binding CmdLibraryFolder}">
+                        <Image Source="../Resource/songFolder.png" Width="16" Height="16"/>
+                    </Button>
+                    <TextBlock Grid.Column="2" Grid.Row="0"  Text="{Binding LibraryFolder}" />
 
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Album:"/>
-                    <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding NameAlbum}"/>
+                    <Border                    Grid.Row="1"  Margin="3"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Title:"/>
-                    <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding NameSong}"/>
+                    <Image     Grid.Column="0" Grid.Row="2"  Source="../Resource/artistName.png" Width="16" Height="16"/>
+                    <TextBlock Grid.Column="2" Grid.Row="2"  Text="{Binding NameArtist}" />
+                                                            
+                    <Border                    Grid.Row="3"  Margin="3"/>
+                                                            
+                    <Image     Grid.Column="0" Grid.Row="4"  Source="../Resource/albumName.png" Width="16" Height="16"/>
+                    <TextBlock Grid.Column="2" Grid.Row="4"  Text="{Binding NameAlbum}"/>
+                                                            
+                    <Border                    Grid.Row="5"  Margin="3"/>
+                                                            
+                    <Image     Grid.Column="0" Grid.Row="6"  Source="../Resource/songName.png" Width="16" Height="16"/>
+                    <TextBlock Grid.Column="2" Grid.Row="6"  Text="{Binding NameSong}"/>
+                                                            
+                    <Border                    Grid.Row="7"  Margin="3"/>
+                                                            
+                    <Image     Grid.Column="0" Grid.Row="8"  Source="../Resource/songTrack.png" Width="16" Height="16"/>
+                    <TextBlock Grid.Column="2" Grid.Row="8"  Text="{Binding NameTrack}"/>
+                                                            
+                    <Border                    Grid.Row="9"  Margin="3"/>
+                                                            
+                    <Image     Grid.Column="0" Grid.Row="10" Source="../Resource/songLength.png" Width="16" Height="16"/>
+                    <TextBlock Grid.Column="2" Grid.Row="10" Text="{Binding NameLength}"/>
+                                                            
+                    <Border                    Grid.Row="11"  Margin="3"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Track:"/>
-                    <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding NameTrack}"/>
+                    <Image     Grid.Column="0" Grid.Row="12" Source="../Resource/songFile.png" Width="16" Height="16"/>
+                    <TextBlock Grid.Column="2" Grid.Row="12" Text="{Binding NameFile}"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Length:"/>
-                    <TextBlock Grid.Column="2" Grid.Row="4" Text="{Binding NameLength}"/>
-                    
-                    <TextBlock Grid.Column="0" Grid.Row="5" Text="File:"/>
-                    <TextBlock Grid.Column="2" Grid.Row="5" Text="{Binding NameFile}"/>
+                    <Border                    Grid.Row="13" Margin="3"/>
+
+                    <Image     Grid.Column="0" Grid.Row="14" Source="../Resource/songRating.png" Width="16" Height="16"/>
+                    <StackPanel Grid.Column="2" Grid.Row="14" Orientation="Horizontal">
+                        <Button>
+                            <Image Width="16" Height="16">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="../Resource/starOff.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SongRating1}" Value="True">
+                                                <Setter Property="Source" Value="../Resource/starOn.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                        <Button>
+                            <Image Width="16" Height="16">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="../Resource/starOff.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SongRating2}" Value="True">
+                                                <Setter Property="Source" Value="../Resource/starOn.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                        <Button>
+                            <Image Width="16" Height="16">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="../Resource/starOff.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SongRating3}" Value="True">
+                                                <Setter Property="Source" Value="../Resource/starOn.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                        <Button>
+                            <Image Width="16" Height="16">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="../Resource/starOff.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SongRating4}" Value="True">
+                                                <Setter Property="Source" Value="../Resource/starOn.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                        <Button>
+                            <Image Width="16" Height="16">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="../Resource/starOff.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SongRating5}" Value="True">
+                                                <Setter Property="Source" Value="../Resource/starOn.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+
+                        <Border Margin="3"/>
+
+                        <Button>
+                            <Image Width="16" Height="16">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="../Resource/songBrokenOff.png"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SongBroken}" Value="True">
+                                                <Setter Property="Source" Value="../Resource/songBrokenOn.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                    </StackPanel>
+
+                    <Border                    Grid.Row="15" Margin="3"/>
 
                     <ProgressBar 
                         Grid.Column     ="0" 
-                        Grid.Row        ="7" 
+                        Grid.Row        ="17" 
                         Grid.ColumnSpan ="3" 
                         Height          ="10" 
                         Minimum         ="0" 
@@ -91,12 +213,6 @@
 
             <!-- Controls -->
             <StackPanel Grid.Row="2" Orientation="Horizontal">
-
-                <Button Command="{Binding CmdSetting}">
-                    <Image Source="../Resource/setting.png" Width="32" Height="32"/>
-                </Button>
-
-                <Border Margin="3"/>
 
                 <Button Command="{Binding CmdPrev}">
                     <Image Source="../Resource/prev.png" Width="32" Height="32"/>
@@ -147,14 +263,27 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Column="0" Grid.Row="0" Content="Library:"/>
+                <Grid Grid.Column="0" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Column="0" Grid.Row="0" Content="Library:" VerticalContentAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding LibrarySearch, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Padding="2"/>
+                </Grid>
+                
+                <Border Grid.Row="1" Margin="3"/>
+                
                 <DataGrid 
                     x:Name                  ="DgridLibrary" 
                     Grid.Column             ="0" 
-                    Grid.Row                ="1"
+                    Grid.Row                ="2"
                     ItemsSource             ="{Binding LibraryList}" 
                     CanUserSortColumns      ="False"
                     AutoGenerateColumns     ="False"
@@ -182,7 +311,7 @@
 
                 <Border Grid.Column="1" Margin="3"/>
 
-                <StackPanel Grid.Column="2" Grid.Row="1">
+                <StackPanel Grid.Column="2" Grid.Row="2">
                     <Button Command="{Binding CmdArtistAdd}">
                         <Image Width="32" Height="32" Source="../Resource/ArtistAdd.png"/>
                     </Button>
@@ -208,11 +337,11 @@
 
                 <Border Grid.Column="3" Margin="3"/>
 
-                <Label Grid.Column="4" Grid.Row="0" Content="Play List:"/>
+                <Label Grid.Column="4" Grid.Row="0" Content="Play List:" VerticalContentAlignment="Center"/>
                 <DataGrid 
                     x:Name                  ="DgridPlay"
                     Grid.Column             ="4"
-                    Grid.Row                ="1"
+                    Grid.Row                ="2"
                     ItemsSource             ="{Binding PlayList}"
                     CanUserSortColumns      ="False"
                     AutoGenerateColumns     ="False"

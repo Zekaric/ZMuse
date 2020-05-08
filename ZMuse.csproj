@@ -7,17 +7,33 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Resource\albumAdd.png" />
+    <None Remove="Resource\albumName.png" />
     <None Remove="Resource\artistAdd.png" />
+    <None Remove="Resource\artistName.png" />
     <None Remove="Resource\next.png" />
     <None Remove="Resource\pause.png" />
     <None Remove="Resource\play.png" />
     <None Remove="Resource\prev.png" />
     <None Remove="Resource\setting.png" />
     <None Remove="Resource\songAdd.png" />
+    <None Remove="Resource\songBrokenOff.png" />
+    <None Remove="Resource\songBrokenOn.png" />
+    <None Remove="Resource\songFile.png" />
+    <None Remove="Resource\songFolder.png" />
+    <None Remove="Resource\songLength.png" />
+    <None Remove="Resource\songName.png" />
+    <None Remove="Resource\songRating.png" />
     <None Remove="Resource\songRemove.png" />
     <None Remove="Resource\songShuffle.png" />
+    <None Remove="Resource\songTrack.png" />
+    <None Remove="Resource\starOff.png" />
+    <None Remove="Resource\starOn.png" />
     <None Remove="Resource\stop.png" />
   </ItemGroup>
 
@@ -33,10 +49,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resource\albumAdd.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resource\albumName.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resource\artistAdd.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\artistName.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\next.png">
@@ -57,10 +83,40 @@
     <Resource Include="Resource\songAdd.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resource\songBrokenOff.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songBrokenOn.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songFile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songFolder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songLength.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songName.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songRating.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resource\songRemove.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\songShuffle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\songTrack.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\starOff.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\starOn.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\stop.png">

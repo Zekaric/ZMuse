@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Ookii.Dialogs.Wpf;
 using ZMuse.Command;
 using ZMuse.Model;
 
@@ -28,16 +31,21 @@ namespace ZMuse.ViewModel
         private Timer                           _timer                  = null;
         private WMPLib.WindowsMediaPlayer       _wmPlayer               = null;
         private Int32                           _songIndex              = 0;
+        private Boolean                         _hasSongEnded           = false;
+        private String                          _librarySearch          = "";
+        private String                          _libraryFolder          = "";
+        private Window                          _view                   = null;
 
         // auto-implemented properties.
 
-        public Boolean                          IsPaused                { get; set;                                                     } = false;
+        public Boolean                          IsPaused                { get; set;                                          } = false;
         public String                           NameAlbum               { get { return _songAudioFile?.NameAlbum;        }   }
         public String                           NameArtist              { get { return _songAudioFile?.NameArtist;       }   }
         public String                           NameFile                { get { return _songAudioFile?.FileName;         }   }
         public String                           NameFileImage           { get { return _songAudioFile?.FileNameImage;    }   }
         public String                           NameSong                { get { return _songAudioFile?.NameSong;         }   }
         public String                           NameTrack               { get { return _songAudioFile?.Track.ToString(); }   }
+        public String                           LibraryFolder           { get { return _libraryFolder; }                     }
 
         public ICommand                         CmdNext                 { get; private set; }
         public ICommand                         CmdPlayPause            { get; private set; }
@@ -48,8 +56,47 @@ namespace ZMuse.ViewModel
         public ICommand                         CmdSongAdd              { get; private set; }
         public ICommand                         CmdSongRemove           { get; private set; }
         public ICommand                         CmdSongShuffle          { get; private set; }
+        public ICommand                         CmdLibraryFolder        { get; private set; }
 
         // More complicate properties that can't be auto-implemented.
+
+        public String LibrarySearch  
+        {
+            get
+            {
+                return _librarySearch;
+            }
+            set
+            {
+                AudioFile file;
+                Int32     index,
+                          count;
+
+                // Get the new value.
+                _librarySearch = value;
+
+                // Clean out the old.
+                _libraryList.Clear();
+
+                // Repopulate.
+                count = _audioFileList.FileList.Count;
+                for (index = 0; index < count; index++)
+                {
+                    file = _audioFileList.FileList[index];
+
+                    // If the value appears anywhere in the filename
+                    if (file.NameArtist.Contains(value, StringComparison.InvariantCultureIgnoreCase) ||
+                        file.NameAlbum.Contains( value, StringComparison.InvariantCultureIgnoreCase) ||
+                        file.NameSong.Contains(  value, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        _libraryList.Add(file);
+                    }
+                }
+
+                // Update the grid.
+                OnPropertyChanged("LibraryList");
+            }
+        }
 
         public String NameLength
         {
@@ -89,39 +136,66 @@ namespace ZMuse.ViewModel
         }
 
         // Function ///////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindowVM()
+        public MainWindowVM(Window view)
         {
-            Int32 index;
+            StorageLoad();
 
-            CmdNext        = new CommandHandler(null,                this.ExeNext);
-            CmdPlayPause   = new CommandHandler(null,                this.ExePlayPause);
-            CmdPrev        = new CommandHandler(null,                this.ExePrev);
-            CmdStop        = new CommandHandler(null,                this.ExeStop);
-            CmdArtistAdd   = new CommandHandler(this.CanLibSel1,     this.ExeArtistAdd);
-            CmdAlbumAdd    = new CommandHandler(this.CanLibSel1,     this.ExeAlbumAdd);
-            CmdSongAdd     = new CommandHandler(this.CanLibSel1OrN,  this.ExeSongAdd);
-            CmdSongRemove  = new CommandHandler(this.CanPlaySel1OrN, this.ExeSongRemove);
-            CmdSongShuffle = new CommandHandler(this.CanPlay2OrN,    this.ExeSongShuffle);
+            CmdNext             = new CommandHandler(null,                this.ExeNext);
+            CmdPlayPause        = new CommandHandler(null,                this.ExePlayPause);
+            CmdPrev             = new CommandHandler(null,                this.ExePrev);
+            CmdStop             = new CommandHandler(null,                this.ExeStop);
+            CmdArtistAdd        = new CommandHandler(this.CanLibSel1,     this.ExeArtistAdd);
+            CmdAlbumAdd         = new CommandHandler(this.CanLibSel1,     this.ExeAlbumAdd);
+            CmdSongAdd          = new CommandHandler(this.CanLibSel1OrN,  this.ExeSongAdd);
+            CmdSongRemove       = new CommandHandler(this.CanPlaySel1OrN, this.ExeSongRemove);
+            CmdSongShuffle      = new CommandHandler(this.CanPlay2OrN,    this.ExeSongShuffle);
+            CmdLibraryFolder    = new CommandHandler(null,                this.ExeLibraryFolder);
 
-            this._audioFileList = new AudioFileList("\\\\nastasha\\public\\devnetD\\pmusic");
+            this._view          = view;
 
-            this._libraryList = new ObservableCollection<AudioFile>();
-            for (index = 0; index < this._audioFileList.FileList.Count; index++)
-            { 
-                this._libraryList.Add(this._audioFileList.FileList[index]);
-            }
-
-            this._playList = new ObservableCollection<AudioFile>();
-
-            this._wmPlayer       = new WMPLib.WindowsMediaPlayer();
+            this._wmPlayer      = new WMPLib.WindowsMediaPlayer();
+            this._wmPlayer.PlayStateChange += new WMPLib._WMPOCXEvents_PlayStateChangeEventHandler(SongEnded);
 
             this._timer          = new Timer();
             this._timer.Tick    += new EventHandler(TimerTick);
             this._timer.Interval = 100;
             this._timer.Start();
+        }
+
+        public void LibraryListSelChange(Object sender, EventArgs e)
+        {
+            DataGrid dgrid;
+            Int32    count;
+            Int32    index;
+            
+            dgrid = sender as DataGrid;
+            count = dgrid.SelectedItems.Count;
+
+            _libraryListSelected = new List<AudioFile>();
+            for (index = 0; index < count; index++)
+            {
+                _libraryListSelected.Add(dgrid.SelectedItems[index] as AudioFile);
+            }
+        }
+
+        public void PlayListSelChange(Object sender, EventArgs e)
+        {
+            DataGrid dgrid;
+            Int32    count;
+            Int32    index;
+            
+            dgrid = sender as DataGrid;
+            count = dgrid.SelectedItems.Count;
+
+            _playListSelected = new List<AudioFile>();
+            for (index = 0; index < count; index++)
+            {
+                _playListSelected.Add(dgrid.SelectedItems[index] as AudioFile);
+            }
         }
 
         /// <summary>
@@ -398,6 +472,38 @@ namespace ZMuse.ViewModel
             SetSong(0);
         }
 
+        private void ExeLibraryFolder(Object parameter)
+        {
+            VistaFolderBrowserDialog folderBrowser;
+
+            folderBrowser = new VistaFolderBrowserDialog();
+
+            // Get the folder.
+            if (folderBrowser.ShowDialog(this._view) == true)
+            {
+                // Set the folder path.  
+                SetLibraryFolder(folderBrowser.SelectedPath);
+
+                // Update the ui.
+                OnPropertyChanged("LibraryList");
+            
+                OnPropertyChanged("PlayList");
+
+                OnPropertyChanged("NameAlbum"); 
+                OnPropertyChanged("NameArtist");
+                OnPropertyChanged("NameFile");
+                OnPropertyChanged("NameFileImage");
+                OnPropertyChanged("NameSong");
+                OnPropertyChanged("NameTrack");
+                OnPropertyChanged("NameLength");
+
+                OnPropertyChanged("LibraryFolder");
+
+                // Save the change for next time in.
+                StorageSave();
+            }
+        }
+
         /// <summary>
         /// Update the ui.
         /// </summary>
@@ -419,26 +525,32 @@ namespace ZMuse.ViewModel
                 }
 
                 // We have come to the end.
-                if (_wmPlayer.currentMedia.duration != 0 &&
-                    _wmPlayer.controls.currentPosition == _wmPlayer.currentMedia.duration)
+                if (_hasSongEnded)
                 {
-                    // Move to the next song in the play list.
-                    if (IsPlaying)
-                    { 
-                        // For checking if there are any more songs.
-                        itemp = SongIndex;
+                    IsPlaying     = false;
+                    _hasSongEnded = false;
 
-                        // Move to the next song.
-                        SetSong(SongIndex + 1);
+                    // For checking if there are any more songs.
+                    itemp = SongIndex;
 
-                        // SongIndex changed so there are more songs in the list.
-                        if (itemp != SongIndex)
-                        {
-                            // Play the new song.
-                            ExePlayPause(null);
-                        }
+                    // Move to the next song.
+                    SetSong(SongIndex + 1);
+
+                    // SongIndex changed so there are more songs in the list.
+                    if (itemp != SongIndex)
+                    {
+                        // Play the new song.
+                        ExePlayPause(null);
                     }
                 }
+            }
+        }
+
+        private void SongEnded(Int32 NewState)
+        {
+            if (NewState == (Int32) WMPLib.WMPPlayState.wmppsMediaEnded)
+            {
+                _hasSongEnded = true;
             }
         }
 
@@ -464,36 +576,42 @@ namespace ZMuse.ViewModel
             OnPropertyChanged("NameLength");
         }
 
-        public void LibraryListSelChange(Object sender, EventArgs e)
-        {
-            DataGrid dgrid;
-            Int32    count;
-            Int32    index;
-            
-            dgrid = sender as DataGrid;
-            count = dgrid.SelectedItems.Count;
+        private void SetLibraryFolder(String folder)
+        { 
+            Int32 index;
 
-            _libraryListSelected = new List<AudioFile>();
-            for (index = 0; index < count; index++)
-            {
-                _libraryListSelected.Add(dgrid.SelectedItems[index] as AudioFile);
+            this._libraryFolder = folder;
+
+            this._audioFileList = new AudioFileList(this._libraryFolder);
+
+            this._libraryList = new ObservableCollection<AudioFile>();
+            for (index = 0; index < this._audioFileList.FileList.Count; index++)
+            { 
+                this._libraryList.Add(this._audioFileList.FileList[index]);
+            }
+
+            this._playList = new ObservableCollection<AudioFile>();
+        }
+
+        private void StorageLoad()
+        {
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\zmuse.dat";
+
+            if (File.Exists(path))
+            { 
+                String folder;
+
+                folder = File.ReadAllText(path);
+
+                SetLibraryFolder(folder);
             }
         }
 
-        public void PlayListSelChange(Object sender, EventArgs e)
+        private void StorageSave()
         {
-            DataGrid dgrid;
-            Int32    count;
-            Int32    index;
-            
-            dgrid = sender as DataGrid;
-            count = dgrid.SelectedItems.Count;
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\zmuse.dat";
 
-            _playListSelected = new List<AudioFile>();
-            for (index = 0; index < count; index++)
-            {
-                _playListSelected.Add(dgrid.SelectedItems[index] as AudioFile);
-            }
+            File.WriteAllText(path, _libraryFolder);
         }
 
         // INotifyPropertyChanged /////////////////////////////////////////////////////////////////

@@ -28,7 +28,7 @@ namespace ZMuse.View
         {
             InitializeComponent();
             DataContext = 
-                _vm     = new MainWindowVM();
+                _vm     = new MainWindowVM(this);
         }
 
         // Not MVVM but currently no clean way to forward these to the VM.
