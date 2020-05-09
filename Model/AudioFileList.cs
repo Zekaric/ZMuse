@@ -9,14 +9,12 @@ namespace ZMuse.Model
     class AudioFileList
     {
         // Variable/Property //////////////////////////////////////////////////////////////////////
-        private List<AudioFile> _FileList  = new List<AudioFile>();
-
-        public List<AudioFile> FileList
-        {
-            get { return _FileList; }
-        }
+        // Public /////////////////////////////////////////////////////////////////////////////////
+        public List<AudioFile> FileList { get; } = new List<AudioFile>();
 
         // Function ///////////////////////////////////////////////////////////////////////////////
+        // Public /////////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -25,7 +23,7 @@ namespace ZMuse.Model
             // Get the song files.
             try
             { 
-                _ProcessDir(AudioDir);
+                this._ProcessDir(AudioDir);
             }
             catch
             {
@@ -35,17 +33,16 @@ namespace ZMuse.Model
             }
 
             // Sort the list.
-            FileList.Sort();
+            this.FileList.Sort();
         }
 
         /// <summary>
         /// Add a new file to the list.
         /// </summary>
         /// <param name="file"></param>
-        public void Add(AudioFile file)
-        {
-            this.FileList.Add(file);
-        }
+        public void Add(AudioFile file) => this.FileList.Add(file);
+
+        // Private ////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Process a directory of files and sub directories.
@@ -64,7 +61,7 @@ namespace ZMuse.Model
             Int32    fileIndex;
 
             // Build up the file list from the directory.
-            dirList = Directory.GetDirectories(dir);
+            dirList      = Directory.GetDirectories(dir);
             dirListCount = dirList.Length;
 
             // For all directories...
@@ -73,7 +70,7 @@ namespace ZMuse.Model
                 dirName = dirList[dirIndex];
 
                 // Recurse to add to the list.
-                _ProcessDir(dirName);
+                this._ProcessDir(dirName);
             }
 
             // Get the MP3 files in the directory.
@@ -85,7 +82,7 @@ namespace ZMuse.Model
             {
                 fileName = fileList[fileIndex];
 
-                _FileList.Add(new AudioFile(fileName));
+                this.FileList.Add(new AudioFile(fileName));
             }
 
             // Get the WAV files in the directory.
@@ -97,7 +94,7 @@ namespace ZMuse.Model
             {
                 fileName = fileList[fileIndex];
 
-                _FileList.Add(new AudioFile(fileName));
+                this.FileList.Add(new AudioFile(fileName));
             }
         }
     }

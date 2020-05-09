@@ -9,14 +9,19 @@ namespace ZMuse.Command
     public class CommandHandler : ICommand
     {
         // Delegate ///////////////////////////////////////////////////////////////////////////////
+        // Public /////////////////////////////////////////////////////////////////////////////////
         public delegate Boolean DelCanExecute(Object parameter);
         public delegate void    DelExecute(   Object parameter);
 
         // Variable ///////////////////////////////////////////////////////////////////////////////
-        private DelCanExecute   _canExecute;
-        private DelExecute      _execute;
+        // Public /////////////////////////////////////////////////////////////////////////////////
+
+        // Private ////////////////////////////////////////////////////////////////////////////////
+        private readonly DelCanExecute   _canExecute;
+        private readonly DelExecute      _execute;
 
         // Function ///////////////////////////////////////////////////////////////////////////////
+        // Public /////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Constructor
@@ -29,6 +34,7 @@ namespace ZMuse.Command
         }
 
         // ICommand ///////////////////////////////////////////////////////////////////////////////
+        // Public /////////////////////////////////////////////////////////////////////////////////
         public event EventHandler CanExecuteChanged
         {
             add    { CommandManager.RequerySuggested += value; }
@@ -37,20 +43,14 @@ namespace ZMuse.Command
 
         public Boolean CanExecute(Object parameter)
         {
-            if (_canExecute != null)
+            if (this._canExecute != null)
             { 
-                return _canExecute(parameter);
+                return this._canExecute(parameter);
             }
 
             return true;
         }
 
-        public void Execute(Object parameter)
-        {
-            if (_execute != null)
-            { 
-                _execute(parameter);
-            }
-        }
+        public void Execute(Object parameter) => this._execute?.Invoke(parameter);
     }
 }

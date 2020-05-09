@@ -10,9 +10,7 @@ namespace ZMuse.Model
     public class AudioFile : IComparable<AudioFile>
     {
         // Variable/Property //////////////////////////////////////////////////////////////////////
-        #if DEBUG
-        private static String lastImage = "";
-        #endif
+        // Public /////////////////////////////////////////////////////////////////////////////////
 
         public String FileName      { get; set; }
         public String FileNameImage { get; set; }
@@ -20,9 +18,15 @@ namespace ZMuse.Model
         public String NameArtist    { get; set; }
         public String NameSong      { get; set; }
         public Int32  Track         { get; set; }
-        public String NameTrack     { get { return Track.ToString("D" + 2); } }
+        public String NameTrack     { get { return this.Track.ToString("D" + 2); } }
+
+        // private ////////////////////////////////////////////////////////////////////////////////
+        #if DEBUG
+        private static String lastImage = "";
+        #endif
 
         // Function ///////////////////////////////////////////////////////////////////////////////
+        // Public /////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Constructor
@@ -31,11 +35,11 @@ namespace ZMuse.Model
         public AudioFile(String fileName)
         {
             String[] fileNameParts;
-            Int32      itemp;
+            Int32    itemp;
 
             this.FileName = fileName;
 
-            fileNameParts = this.FileName.Split("_");
+            fileNameParts = this.FileName.Split('_');
                                            this.NameArtist = fileNameParts[0];
             this.NameAlbum = "-";
             if (fileNameParts.Length >= 2) this.NameAlbum  = fileNameParts[1];
@@ -80,30 +84,51 @@ namespace ZMuse.Model
         }
 
         // IComparable ////////////////////////////////////////////////////////////////////////////
+        // Public /////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Comparing two Audio Files.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public Int32 CompareTo([AllowNull] AudioFile other)
+        public Int32 CompareTo(AudioFile other)
         {
             Int32 result;
 
+            if (other == null)
+            {
+                return 1;
+            }
+
             result = this.NameArtist.CompareTo(other.NameArtist);
-            if (result != 0) return result;
+            if (result != 0)
+            {
+                return result;
+            }
 
             result = this.NameAlbum.CompareTo(other.NameAlbum);
-            if (result != 0) return result;
+            if (result != 0)
+            {
+                return result;
+            }
 
             result = this.NameTrack.CompareTo(other.NameTrack);
-            if (result != 0) return result;
+            if (result != 0)
+            {
+                return result;
+            }
 
             result = this.NameSong.CompareTo(other.NameSong);
-            if (result != 0) return result;
+            if (result != 0)
+            {
+                return result;
+            }
 
             result = this.FileName.CompareTo(other.FileName);
-            if (result != 0) return result;
+            if (result != 0)
+            {
+                return result;
+            }
 
             return 0;
         }
