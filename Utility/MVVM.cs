@@ -1,12 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using ZMuse.ViewModel;
 
-namespace ZMuse.Command
+namespace ZUtility
 {
-    public class CommandHandler : ICommand
+    /// <summary>
+    /// View Model window handling.
+    /// </summary>
+    public class ZMVVM_VM: INotifyPropertyChanged
+    {
+        // INotifyPropertyChanged /////////////////////////////////////////////////////////////////
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName) => 
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ZMVVM_Command : ICommand
     {
         // Delegate ///////////////////////////////////////////////////////////////////////////////
         // Public /////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +44,7 @@ namespace ZMuse.Command
         /// Constructor
         /// </summary>
         /// <param name="vm"></param>
-        public CommandHandler(DelCanExecute canExecute, DelExecute execute)
+        public ZMVVM_Command(DelCanExecute canExecute, DelExecute execute)
         {
             this._canExecute = canExecute;
             this._execute    = execute;

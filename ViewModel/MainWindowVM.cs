@@ -4,17 +4,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Ookii.Dialogs.Wpf;
-using ZMuse.Command;
 using ZMuse.Model;
+using ZUtility;
 using DataGrid = System.Windows.Controls.DataGrid;
 
 namespace ZMuse.ViewModel
 {
-    internal class MainWindowVM : INotifyPropertyChanged
+    internal class MainWindowVM : ZMVVM_VM
     {
         // Variable/Property //////////////////////////////////////////////////////////////////////
         // Public /////////////////////////////////////////////////////////////////////////////////
@@ -130,16 +129,16 @@ namespace ZMuse.ViewModel
         {
             _SettingLoad();
 
-            this.CmdNext            = new CommandHandler(null,                this._ExeNext);
-            this.CmdPlayPause       = new CommandHandler(null,                this._ExePlayPause);
-            this.CmdPrev            = new CommandHandler(null,                this._ExePrev);
-            this.CmdStop            = new CommandHandler(null,                this._ExeStop);
-            this.CmdArtistAdd       = new CommandHandler(this._CanLibSel1,     this._ExeAddArtist);
-            this.CmdAlbumAdd        = new CommandHandler(this._CanLibSel1,     this._ExeAddAlbum);
-            this.CmdSongAdd         = new CommandHandler(this._CanLibSel1OrN,  this._ExeAddSong);
-            this.CmdSongRemove      = new CommandHandler(this._CanPlaySel1OrN, this._ExeRemoveSong);
-            this.CmdSongShuffle     = new CommandHandler(this._CanPlay2OrN,    this._ExeShuffleSong);
-            this.CmdLibraryFolder   = new CommandHandler(null,                this._ExePickLibraryFolder);
+            this.CmdNext            = new ZMVVM_Command(null,                 this._ExeNext);
+            this.CmdPlayPause       = new ZMVVM_Command(null,                 this._ExePlayPause);
+            this.CmdPrev            = new ZMVVM_Command(null,                 this._ExePrev);
+            this.CmdStop            = new ZMVVM_Command(null,                 this._ExeStop);
+            this.CmdArtistAdd       = new ZMVVM_Command(this._CanLibSel1,     this._ExeAddArtist);
+            this.CmdAlbumAdd        = new ZMVVM_Command(this._CanLibSel1,     this._ExeAddAlbum);
+            this.CmdSongAdd         = new ZMVVM_Command(this._CanLibSel1OrN,  this._ExeAddSong);
+            this.CmdSongRemove      = new ZMVVM_Command(this._CanPlaySel1OrN, this._ExeRemoveSong);
+            this.CmdSongShuffle     = new ZMVVM_Command(this._CanPlay2OrN,    this._ExeShuffleSong);
+            this.CmdLibraryFolder   = new ZMVVM_Command(null,                 this._ExePickLibraryFolder);
 
             this._view              = view;
 
@@ -656,10 +655,5 @@ namespace ZMuse.ViewModel
                 }
             }
         }
-
-        // INotifyPropertyChanged /////////////////////////////////////////////////////////////////
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
